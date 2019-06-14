@@ -43,7 +43,7 @@ Based on the way I requested the data, the data only contains plate appearances 
 
 ## Determining Who Stole Second
 
-My apologies for not commenting this well.  I recomend running this line by line to determing what is happening.
+My apologies for not commenting this well.  I recommend running this line by line to determine what is happening.
 
 ```{r}
 ##  
@@ -76,7 +76,7 @@ stolesecond %>% head
 stolesecond %>% count(stole2nd,sort = TRUE) %>% top_n(10)
 ```
 
-Now that we've discover who has stole second, lets add that data back into the main dataset.
+Now that we've discover who has stole second, lets add that data back into the main data set.
 
 ```{r}
 secondseal =
@@ -115,7 +115,7 @@ secondseal %>%
   gather(key, other,-release_speed,-stole2nd) %>%
   ggplot(aes(x=release_speed, fill = stole2nd)) + geom_density(, alpha = .5) +
   facet_wrap(~other) +
-  labs(title = "Successful Steals at Different Selease Speeds", subtitle = "By Number of Outs")
+  labs(title = "Successful Steals at Different Release Speeds", subtitle = "By Number of Outs")
 ```
 
 ```{r}
@@ -125,7 +125,7 @@ secondseal %>%
   gather(key, other,-release_speed,-stole2nd) %>%
   ggplot(aes(x=release_speed, fill = stole2nd)) + geom_density(, alpha = .5) +
   facet_wrap(~other) +
-  labs(title = "Successful Steals at Different Selease Speeds", subtitle = "By Pitch Type")
+  labs(title = "Successful Steals at Different Release Speeds", subtitle = "By Pitch Type")
 ```
 
 ## Stealing Third Attempts

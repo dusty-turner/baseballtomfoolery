@@ -1,0 +1,427 @@
+\documentclass[]{article}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Stealing Discovery Analysis},
+            pdfauthor={Dusty Turner},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{0}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Stealing Discovery Analysis}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Dusty Turner}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{June 13, 2019}
+
+
+\begin{document}
+\maketitle
+
+\subsection{Data}\label{data}
+
+\begin{enumerate}
+\def\labelenumi{\arabic{enumi}.}
+\item
+  The data we are analyzing below come from the following website:
+  \href{\%22https://baseballsavant.mlb.com/statcast_search\%22}{Baseball
+  Savant}
+\item
+  I learned by trial and error that you can only download 40,000 rows of
+  data at a time. You'll have to add it together to do more stuff.
+\end{enumerate}
+
+\subsection{Read in Data and Set
+Options}\label{read-in-data-and-set-options}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(tidyverse)}
+\KeywordTok{library}\NormalTok{(stringr)}
+\KeywordTok{options}\NormalTok{(}\DataTypeTok{tibble.print_min =} \DecValTok{100}\NormalTok{)}
+\NormalTok{data =}\StringTok{ }\KeywordTok{read_csv}\NormalTok{(}\StringTok{"savant_data_stealing.csv"}\NormalTok{,}\DataTypeTok{guess_max =} \DecValTok{10000}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\NormalTok{janitor}\OperatorTok{::}\KeywordTok{clean_names}\NormalTok{()}
+\CommentTok{# data = read_csv("savant_data_stealing_everypitch.csv",guess_max = 10000) %>% janitor::clean_names()}
+\end{Highlighting}
+\end{Shaded}
+
+The data has the following columns available:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{names}\NormalTok{(data)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##  [1] "pitch_type"                      "game_date"                      
+##  [3] "release_speed"                   "release_pos_x"                  
+##  [5] "release_pos_z"                   "player_name"                    
+##  [7] "batter"                          "pitcher"                        
+##  [9] "events"                          "description"                    
+## [11] "spin_dir"                        "spin_rate_deprecated"           
+## [13] "break_angle_deprecated"          "break_length_deprecated"        
+## [15] "zone"                            "des"                            
+## [17] "game_type"                       "stand"                          
+## [19] "p_throws"                        "home_team"                      
+## [21] "away_team"                       "type"                           
+## [23] "hit_location"                    "bb_type"                        
+## [25] "balls"                           "strikes"                        
+## [27] "game_year"                       "pfx_x"                          
+## [29] "pfx_z"                           "plate_x"                        
+## [31] "plate_z"                         "on_3b"                          
+## [33] "on_2b"                           "on_1b"                          
+## [35] "outs_when_up"                    "inning"                         
+## [37] "inning_topbot"                   "hc_x"                           
+## [39] "hc_y"                            "tfs_deprecated"                 
+## [41] "tfs_zulu_deprecated"             "fielder_2"                      
+## [43] "umpire"                          "sv_id"                          
+## [45] "vx0"                             "vy0"                            
+## [47] "vz0"                             "ax"                             
+## [49] "ay"                              "az"                             
+## [51] "sz_top"                          "sz_bot"                         
+## [53] "hit_distance_sc"                 "launch_speed"                   
+## [55] "launch_angle"                    "effective_speed"                
+## [57] "release_spin_rate"               "release_extension"              
+## [59] "game_pk"                         "pitcher_1"                      
+## [61] "fielder_2_1"                     "fielder_3"                      
+## [63] "fielder_4"                       "fielder_5"                      
+## [65] "fielder_6"                       "fielder_7"                      
+## [67] "fielder_8"                       "fielder_9"                      
+## [69] "release_pos_y"                   "estimated_ba_using_speedangle"  
+## [71] "estimated_woba_using_speedangle" "woba_value"                     
+## [73] "woba_denom"                      "babip_value"                    
+## [75] "iso_value"                       "launch_speed_angle"             
+## [77] "at_bat_number"                   "pitch_number"                   
+## [79] "pitch_name"                      "home_score"                     
+## [81] "away_score"                      "bat_score"                      
+## [83] "fld_score"                       "post_away_score"                
+## [85] "post_home_score"                 "post_bat_score"                 
+## [87] "post_fld_score"                  "if_fielding_alignment"          
+## [89] "of_fielding_alignment"
+\end{verbatim}
+
+The dates contain the following range:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data}\OperatorTok{$}\NormalTok{game_date }\OperatorTok{%>%}\StringTok{ }\KeywordTok{range}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] "2019-05-19" "2019-06-11"
+\end{verbatim}
+
+Based on the way I requested the data, the data only contains plate
+appearances where there was at least one runner on base
+
+\subsection{Determining Who Stole
+Second}\label{determining-who-stole-second}
+
+My apologies for not commenting this well. I recommend running this line
+by line to determine what is happening.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{##  }
+\NormalTok{stolesecond =}
+\NormalTok{data }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{pitchID =} \KeywordTok{row_number}\NormalTok{()) }\OperatorTok{%>%}
+\StringTok{  }\CommentTok{# select(pitchID, events,des,pitch_type,release_speed,batter,at_bat_number,on_1b,on_2b,on_3b) %>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(pitchID, batter, pitcher,balls, strikes,at_bat_number,on_1b,on_2b,on_3b) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate_at}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"on_1b"}\NormalTok{,}\StringTok{"on_2b"}\NormalTok{,}\StringTok{"on_3b"}\NormalTok{), as.numeric) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{on_1b =} \KeywordTok{na_if}\NormalTok{(on_1b,}\StringTok{"null"}\NormalTok{), }\DataTypeTok{on_2b =} \KeywordTok{na_if}\NormalTok{(on_2b,}\StringTok{"null"}\NormalTok{), }\DataTypeTok{on_3b =} \KeywordTok{na_if}\NormalTok{(on_3b,}\StringTok{"null"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(batter,pitcher,at_bat_number) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{arrange}\NormalTok{(batter) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\KeywordTok{sum}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(on_2b))}\OperatorTok{>}\DecValTok{1}\OperatorTok{&&}\KeywordTok{sum}\NormalTok{(}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(on_2b))}\OperatorTok{>}\DecValTok{1}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(batter,pitcher,at_bat_number,on_2b) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{groupID =} \KeywordTok{row_number}\NormalTok{())  }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(on_1b)}\OperatorTok{|!}\KeywordTok{is.na}\NormalTok{(on_2b)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(}\OperatorTok{!}\KeywordTok{is.na}\NormalTok{(on_2b)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{group_by}\NormalTok{(batter,pitcher,at_bat_number,on_2b) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(groupID }\OperatorTok{==}\StringTok{ }\KeywordTok{max}\NormalTok{(groupID)) }\OperatorTok{%>%}\StringTok{ }\NormalTok{## this is the pitch he stole from 1st to second }
+\StringTok{  }\KeywordTok{ungroup}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(pitchID,batter) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{rename}\NormalTok{(}\DataTypeTok{stole2nd =}\NormalTok{ batter) }
+\end{Highlighting}
+\end{Shaded}
+
+Look at it:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stolesecond }\OperatorTok{%>%}\StringTok{ }\NormalTok{head}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 6 x 2
+##   pitchID stole2nd
+##     <int>    <dbl>
+## 1   37017   408234
+## 2   21640   425772
+## 3   11672   425783
+## 4   10559   429665
+## 5   30643   430945
+## 6   20034   431145
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{stolesecond }\OperatorTok{%>%}\StringTok{ }\KeywordTok{count}\NormalTok{(stole2nd,}\DataTypeTok{sort =} \OtherTok{TRUE}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{top_n}\NormalTok{(}\DecValTok{10}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## # A tibble: 14 x 2
+##    stole2nd     n
+##       <dbl> <int>
+##  1   467793     5
+##  2   547379     4
+##  3   605141     4
+##  4   452254     3
+##  5   452678     3
+##  6   502054     3
+##  7   547180     3
+##  8   570560     3
+##  9   571718     3
+## 10   571745     3
+## 11   595284     3
+## 12   596129     3
+## 13   605233     3
+## 14   621020     3
+\end{verbatim}
+
+Now that we've discover who has stole second, lets add that data back
+into the main data set.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{secondseal =}
+\NormalTok{data }\OperatorTok{%>%}
+\StringTok{  }\CommentTok{# select(game_date,batter, des,pitcher,balls, strikes,outs_when_up,at_bat_number,on_1b,on_2b,on_3b, release_speed,pitch_type) %>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{pitchID =} \KeywordTok{row_number}\NormalTok{(), }\DataTypeTok{des =} \KeywordTok{na_if}\NormalTok{(des,}\StringTok{"null"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{left_join}\NormalTok{(stolesecond) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{stole2nd =} \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{is.na}\NormalTok{(stole2nd), }\StringTok{"No"}\NormalTok{,}\StringTok{"Yes"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{stole2ndcaught =} \KeywordTok{ifelse}\NormalTok{(}\KeywordTok{str_detect}\NormalTok{(des,}\StringTok{"caught"}\NormalTok{)}\OperatorTok{&}\KeywordTok{str_detect}\NormalTok{(des,}\StringTok{"2nd base"}\NormalTok{), }\StringTok{"Yes"}\NormalTok{, }\StringTok{"No"}\NormalTok{)) }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{stealattempt =} \KeywordTok{ifelse}\NormalTok{(stole2nd}\OperatorTok{==}\StringTok{"Yes"}\OperatorTok{|}\NormalTok{stole2ndcaught}\OperatorTok{==}\StringTok{"Yes"}\NormalTok{,}\StringTok{"Yes"}\NormalTok{,}\StringTok{"No"}\NormalTok{)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{release_speed =} \KeywordTok{as.numeric}\NormalTok{(release_speed)) }\OperatorTok{%>%}\StringTok{ }\KeywordTok{filter}\NormalTok{(stealattempt }\OperatorTok{==}\StringTok{ "Yes"}\NormalTok{)}
+  \CommentTok{# select(pitchID,des, stole2nd,stole2ndcaught,stealattempt) }
+\end{Highlighting}
+\end{Shaded}
+
+Look at data:
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{secondseal }\OperatorTok{%>%}\StringTok{ }\NormalTok{head}
+\end{Highlighting}
+\end{Shaded}
+
+\newpage
+
+\subsection{Visualizations}\label{visualizations}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{secondseal }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{release_speed, }\DataTypeTok{fill =}\NormalTok{ stole2nd)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_density}\NormalTok{(, }\DataTypeTok{alpha =}\NormalTok{ .}\DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{title =} \StringTok{"Successful Steals at Different Release Speeds"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Stealing_Markdown_files/figure-latex/unnamed-chunk-8-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{secondseal }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\CommentTok{# select(pitch_type,release_speed,stole2nd) %>%}
+\StringTok{  }\KeywordTok{select}\NormalTok{(release_speed,stole2nd, outs_when_up) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{gather}\NormalTok{(key, other,}\OperatorTok{-}\NormalTok{release_speed,}\OperatorTok{-}\NormalTok{stole2nd) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{release_speed, }\DataTypeTok{fill =}\NormalTok{ stole2nd)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_density}\NormalTok{(, }\DataTypeTok{alpha =}\NormalTok{ .}\DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{other) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{title =} \StringTok{"Successful Steals at Different Release Speeds"}\NormalTok{, }\DataTypeTok{subtitle =} \StringTok{"By Number of Outs"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Stealing_Markdown_files/figure-latex/unnamed-chunk-9-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{secondseal }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(pitch_type,release_speed,stole2nd) }\OperatorTok{%>%}
+\StringTok{  }\CommentTok{# select(release_speed,stole2nd, outs_when_up) %>%}
+\StringTok{  }\KeywordTok{gather}\NormalTok{(key, other,}\OperatorTok{-}\NormalTok{release_speed,}\OperatorTok{-}\NormalTok{stole2nd) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{release_speed, }\DataTypeTok{fill =}\NormalTok{ stole2nd)) }\OperatorTok{+}\StringTok{ }\KeywordTok{geom_density}\NormalTok{(, }\DataTypeTok{alpha =}\NormalTok{ .}\DecValTok{5}\NormalTok{) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{other) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{title =} \StringTok{"Successful Steals at Different Release Speeds"}\NormalTok{, }\DataTypeTok{subtitle =} \StringTok{"By Pitch Type"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Stealing_Markdown_files/figure-latex/unnamed-chunk-10-1.pdf}
+
+\subsection{Stealing Third Attempts}\label{stealing-third-attempts}
+
+Not currently correct
+
+\newpage
+
+\subsection{A Look at Other Batting
+Stuff}\label{a-look-at-other-batting-stuff}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{texas =}\StringTok{ }\KeywordTok{read_csv}\NormalTok{(}\StringTok{"texas_batters.csv"}\NormalTok{) }\OperatorTok{%>%}\StringTok{ }\NormalTok{janitor}\OperatorTok{::}\KeywordTok{clean_names}\NormalTok{() }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{release_speed =} \KeywordTok{as.double}\NormalTok{(release_speed), }
+         \DataTypeTok{launch_speed =} \KeywordTok{as.double}\NormalTok{(launch_speed), }
+         \DataTypeTok{launch_angle =} \KeywordTok{as.double}\NormalTok{(launch_angle),}
+         \CommentTok{# launch_angle = as.double(launch_angle),}
+         \DataTypeTok{hit_distance_sc =} \KeywordTok{as.double}\NormalTok{(hit_distance_sc),}
+         \DataTypeTok{hc_x =} \KeywordTok{as.double}\NormalTok{(hc_x),}
+         \DataTypeTok{hc_y =} \KeywordTok{as.double}\NormalTok{(hc_y))}
+
+
+\NormalTok{texas }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(player_name,release_speed,launch_speed,pitch_type,launch_angle,hit_distance_sc) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{filter}\NormalTok{(player_name}\OperatorTok{==}\StringTok{"Elvis Andrus"}\NormalTok{) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{pitch_type =} \KeywordTok{fct_lump}\NormalTok{(pitch_type)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{release_speed, }\DataTypeTok{y=}\NormalTok{hit_distance_sc)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color =}\NormalTok{ launch_angle)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_wrap}\NormalTok{(}\OperatorTok{~}\NormalTok{pitch_type) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{title =} \StringTok{"Hit Distance vs Pitch Speed"}\NormalTok{, }\DataTypeTok{x=}\StringTok{"Pitch Speed"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Hit Distance"}\NormalTok{, }
+       \DataTypeTok{color =} \StringTok{"Launch Angle"}\NormalTok{, }\DataTypeTok{subtitle =} \StringTok{"Elvis Andrus"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Stealing_Markdown_files/figure-latex/unnamed-chunk-12-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{texas }\OperatorTok{%>%}\StringTok{ }
+\StringTok{  }\KeywordTok{select}\NormalTok{(player_name,release_speed,launch_speed,pitch_type,}
+\NormalTok{         launch_angle,hit_distance_sc, hc_x,hc_y,stand,of_fielding_alignment) }\OperatorTok{%>%}
+\StringTok{  }\CommentTok{# filter(player_name=="Elvis Andrus") %>%}
+\StringTok{  }\KeywordTok{mutate}\NormalTok{(}\DataTypeTok{of_fielding_alignment =} \KeywordTok{fct_lump}\NormalTok{(of_fielding_alignment)) }\OperatorTok{%>%}
+\StringTok{  }\KeywordTok{ggplot}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{x=}\NormalTok{hc_x, }\DataTypeTok{y=}\NormalTok{hc_y)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{geom_point}\NormalTok{(}\KeywordTok{aes}\NormalTok{(}\DataTypeTok{color =}\NormalTok{ launch_angle)) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{facet_grid}\NormalTok{(of_fielding_alignment}\OperatorTok{~}\NormalTok{stand) }\OperatorTok{+}
+\StringTok{  }\KeywordTok{labs}\NormalTok{(}\DataTypeTok{title =} \StringTok{"Hit Distance vs Pitch Speed"}\NormalTok{, }\DataTypeTok{x=}\StringTok{"Pitch Speed"}\NormalTok{, }\DataTypeTok{y =} \StringTok{"Hit Distance"}\NormalTok{, }
+       \DataTypeTok{color =} \StringTok{"Launch Angle"}\NormalTok{, }\DataTypeTok{subtitle =} \StringTok{"Elvis Andrus"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Stealing_Markdown_files/figure-latex/unnamed-chunk-13-1.pdf}
+
+
+\end{document}
