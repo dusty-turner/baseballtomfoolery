@@ -1,0 +1,207 @@
+---
+title: "Stealing Discovery Analysis"
+author: "Dusty Turner"
+date: "June 13, 2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Data
+
+1. The data we are analyzing below come from the following website: [Baseball Savant]("https://baseballsavant.mlb.com/statcast_search")
+
+2. I learned by trial and error that you can only download 40,000 rows of data at a time.  You'll have to add it together to do more stuff.  
+
+## Read in Data and Set Options
+
+```{r}
+library(tidyverse)
+library(stringr)
+options(tibble.print_min = 100)
+data = read_csv("savant_data_stealing.csv",guess_max = 10000) %>% janitor::clean_names()
+# data = read_csv("savant_data_stealing_everypitch.csv",guess_max = 10000) %>% janitor::clean_names()
+```
+
+The data has the following columns available:
+
+```{r}
+names(data)
+```
+
+The dates contain the following range:
+
+```{r}
+data$game_date %>% range()
+```
+
+Based on the way I requested the data, the data only contains plate appearances where there was at least one runner on base
+
+## Determining Who Stole Second
+
+My apologies for not commenting this well.  I recomend running this line by line to determing what is happening.
+
+```{r}
+##  
+stolesecond =
+data %>% 
+  mutate(pitchID = row_number()) %>%
+  # select(pitchID, events,des,pitch_type,release_speed,batter,at_bat_number,on_1b,on_2b,on_3b) %>%
+  select(pitchID, batter, pitcher,balls, strikes,at_bat_number,on_1b,on_2b,on_3b) %>%
+  mutate_at(c("on_1b","on_2b","on_3b"), as.numeric) %>%
+  mutate(on_1b = na_if(on_1b,"null"), on_2b = na_if(on_2b,"null"), on_3b = na_if(on_3b,"null")) %>%
+  group_by(batter,pitcher,at_bat_number) %>%
+  arrange(batter) %>%
+  filter(sum(is.na(on_2b))>1&&sum(!is.na(on_2b))>1) %>%
+  group_by(batter,pitcher,at_bat_number,on_2b) %>%
+  mutate(groupID = row_number())  %>%
+  ungroup() %>%
+  filter(!is.na(on_1b)|!is.na(on_2b)) %>%
+  filter(!is.na(on_2b)) %>%
+  group_by(batter,pitcher,at_bat_number,on_2b) %>%
+  filter(groupID == max(groupID)) %>% ## this is the pitch he stole from 1st to second 
+  ungroup() %>%
+  select(pitchID,batter) %>%
+  rename(stole2nd = batter) 
+```
+
+Look at it:
+
+```{r}
+stolesecond %>% head
+stolesecond %>% count(stole2nd,sort = TRUE) %>% top_n(10)
+```
+
+Now that we've discover who has stole second, lets add that data back into the main dataset.
+
+```{r}
+secondseal =
+data %>%
+  # select(game_date,batter, des,pitcher,balls, strikes,outs_when_up,at_bat_number,on_1b,on_2b,on_3b, release_speed,pitch_type) %>%
+  mutate(pitchID = row_number(), des = na_if(des,"null")) %>%
+  left_join(stolesecond) %>%
+  mutate(stole2nd = ifelse(is.na(stole2nd), "No","Yes")) %>% 
+  mutate(stole2ndcaught = ifelse(str_detect(des,"caught")&str_detect(des,"2nd base"), "Yes", "No")) %>% 
+  mutate(stealattempt = ifelse(stole2nd=="Yes"|stole2ndcaught=="Yes","Yes","No")) %>%
+  mutate(release_speed = as.numeric(release_speed)) %>% filter(stealattempt == "Yes")
+  # select(pitchID,des, stole2nd,stole2ndcaught,stealattempt) 
+```
+
+Look at data:
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE}
+secondseal %>% head
+```
+
+\newpage
+
+## Visualizations
+
+
+```{r}
+secondseal %>% 
+  ggplot(aes(x=release_speed, fill = stole2nd)) + geom_density(, alpha = .5) +
+  labs(title = "Successful Steals at Different Release Speeds")
+```
+
+```{r}
+secondseal %>% 
+  # select(pitch_type,release_speed,stole2nd) %>%
+  select(release_speed,stole2nd, outs_when_up) %>%
+  gather(key, other,-release_speed,-stole2nd) %>%
+  ggplot(aes(x=release_speed, fill = stole2nd)) + geom_density(, alpha = .5) +
+  facet_wrap(~other) +
+  labs(title = "Successful Steals at Different Selease Speeds", subtitle = "By Number of Outs")
+```
+
+```{r}
+secondseal %>% 
+  select(pitch_type,release_speed,stole2nd) %>%
+  # select(release_speed,stole2nd, outs_when_up) %>%
+  gather(key, other,-release_speed,-stole2nd) %>%
+  ggplot(aes(x=release_speed, fill = stole2nd)) + geom_density(, alpha = .5) +
+  facet_wrap(~other) +
+  labs(title = "Successful Steals at Different Selease Speeds", subtitle = "By Pitch Type")
+```
+
+## Stealing Third Attempts
+
+Not currently correct
+
+```{r echo=FALSE, eval=FALSE, message=FALSE, warning=FALSE, paged.print=FALSE}
+# stolethird =
+# data %>% 
+#   mutate(pitchID = row_number()) %>%
+#   # select(pitchID, events,des,pitch_type,release_speed,batter,at_bat_number,on_1b,on_2b,on_3b) %>%
+#   select(pitchID, batter, pitcher,balls, strikes,at_bat_number,on_2b,on_3b) %>%
+#   mutate_at(c("on_2b","on_3b"), as.numeric) %>%
+#   mutate(on_2b = na_if(on_2b,"null"), on_3b = na_if(on_3b,"null")) %>%
+#   group_by(batter,pitcher,at_bat_number) %>%
+#   arrange(batter) %>%
+#   # filter(sum(is.na(on_1b))>0&&sum(!is.na(on_1b))>0)
+#   filter(sum(is.na(on_2b))>0) %>%
+#   filter(sum(!is.na(on_2b))>0) %>%
+#   # group_by(on_2b,on_3b) %>%
+#   ungroup() %>%
+#   mutate(groupnumber = row_number()) %>%
+#   group_by(batter,pitcher,at_bat_number) %>%
+#   mutate(help = sum(!is.na(on_3b))) %>%
+#   filter(help!=0) %>%
+#   filter(sum(is.na(on_3b))!=0) %>%
+#   group_by(batter,pitcher,at_bat_number,on_3b) %>%
+#   filter(is.na(on_2b)|is.na(on_3b)) %>%
+#   group_by(batter,pitcher,at_bat_number) %>%
+#   mutate(row_number()) %>%
+#   ungroup() %>%
+#   filter(!is.na(on_2b))
+
+```
+
+\newpage
+
+
+## A Look at Other Batting Stuff
+
+```{r}
+texas = read_csv("texas_batters.csv") %>% janitor::clean_names() %>%
+  mutate(release_speed = as.double(release_speed), 
+         launch_speed = as.double(launch_speed), 
+         launch_angle = as.double(launch_angle),
+         # launch_angle = as.double(launch_angle),
+         hit_distance_sc = as.double(hit_distance_sc),
+         hc_x = as.double(hc_x),
+         hc_y = as.double(hc_y))
+
+
+texas %>% 
+  select(player_name,release_speed,launch_speed,pitch_type,launch_angle,hit_distance_sc) %>%
+  filter(player_name=="Elvis Andrus") %>%
+  mutate(pitch_type = fct_lump(pitch_type)) %>%
+  ggplot(aes(x=release_speed, y=hit_distance_sc)) +
+  geom_point(aes(color = launch_angle)) +
+  facet_wrap(~pitch_type) +
+  labs(title = "Hit Distance vs Pitch Speed", x="Pitch Speed", y = "Hit Distance", 
+       color = "Launch Angle", subtitle = "Elvis Andrus")
+
+
+```
+
+
+
+```{r}
+texas %>% 
+  select(player_name,release_speed,launch_speed,pitch_type,
+         launch_angle,hit_distance_sc, hc_x,hc_y,stand,of_fielding_alignment) %>%
+  # filter(player_name=="Elvis Andrus") %>%
+  mutate(of_fielding_alignment = fct_lump(of_fielding_alignment)) %>%
+  ggplot(aes(x=hc_x, y=hc_y)) +
+  geom_point(aes(color = launch_angle)) +
+  facet_grid(of_fielding_alignment~stand) +
+  labs(title = "Hit Distance vs Pitch Speed", x="Pitch Speed", y = "Hit Distance", 
+       color = "Launch Angle", subtitle = "Elvis Andrus")
+
+```
